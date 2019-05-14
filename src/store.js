@@ -2,15 +2,23 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-
-export default new Vuex.Store({
+const hallSeat = {
   state: {
-
+    x: 8, y: 6
   },
   mutations: {
-
+    changeX (state, x) {
+      state.x = x
+    },
+    changeY (state, y) {
+      state.y = y
+    }
   },
-  actions: {
-
+  actions: { },
+  getters: { }
+}
+export default new Vuex.Store({
+  modules: {
+    hallSeat
   }
 })
