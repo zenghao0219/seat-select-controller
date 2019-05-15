@@ -6,13 +6,13 @@
   @mouseleave.stop.prevent.left="end($event)">
   <div class="seatSelectArea" ref="seatSelectArea">
       <div class="seatArea" :style="{width:seatAreaWidth+'px',height:seatAreaHeight+ 'px'}">
-        <template v-for="xItem in x">
-          <template v-for="yItem in y">
-            <div ref="seatItem" :x="xItem" :y="yItem" class="seatItem" :key="'x'+xItem+'y'+yItem"
-            :style="{width:seatItemWidth+'px',height:seatItemWidth+'px',transform: 'translate3d(' + translateValue * (xItem-1)  + 'px,'+ translateValue * (yItem-1)+'px,0px)'}">
+        <template v-for="seatItem in seatList">
+          <div ref="seatItem" :x="seatItem.x" :y="seatItem.y" class="seatItem" :key="'x'+seatItem.x+'y'+seatItem.y"
+          :style="{width:seatItemWidth+'px',height:seatItemWidth+'px',
+          transform: 'translate3d(' + seatItem.translateX  + 'px,'+ seatItem.translateY + 'px,0px)',
+          background:seatItem.background}">
 
-            </div>
-          </template>
+          </div>
         </template>
       </div>
   </div>
@@ -41,7 +41,9 @@ export default {
       startY: 0,
       showDrag: false,
       seatList: [],
-      timer: null
+      selectSeatList: [],
+      unSelectBack: '#C6E2FF',
+      selectBack: '#409EFF'
     }
   },
   watch: {
@@ -73,10 +75,10 @@ export default {
       let seatScale = 1
       let seatScaleX = 1
       let seatScaleY = 1
-      let seatSelectAreaWidth = this.$refs.seatSelectArea.offsetWidth
-      let seatSelectAreaHeight = this.$refs.seatSelectArea.offsetHeight
-      let seatAreaWidth = 50 * this.x - this.shifting
-      let seatAreaHeight = 50 * this.y - this.shifting
+      let seatSelectAreaWidth = that.$refs.seatSelectArea.offsetWidth
+      let seatSelectAreaHeight = that.$refs.seatSelectArea.offsetHeight
+      let seatAreaWidth = 50 * that.x - that.shifting
+      let seatAreaHeight = 50 * that.y - that.shifting
       if (seatAreaWidth > seatSelectAreaWidth) {
         seatScaleX = seatSelectAreaWidth / seatAreaWidth
       }
@@ -86,22 +88,33 @@ export default {
       if (seatScaleX < 1 || seatScaleY < 1) {
         seatScale = seatScaleX < seatScaleY ? seatScaleX : seatScaleY
       }
-      this.seatItemWidth = 40 * seatScale
-      this.shifting = 10 * seatScale
+      that.seatItemWidth = 40 * seatScale
+      that.shifting = 10 * seatScale
+      that.seatList = []
+      for (let x = 1; x <= that.x; x++) {
+        for (let y = 1; y <= that.y; y++) {
+          var data = {
+            x: x,
+            y: y,
+            translateX: that.translateValue * (x - 1),
+            translateY: that.translateValue * (y - 1),
+            background: this.unSelectBack
+          }
+          that.seatList.push(data)
+        }
+      }
       this.$nextTick(() => {
         if ('seatItem' in that.$refs) {
-          this.seatList = []
           for (const item of that.$refs.seatItem) {
             let clientRect = item.getBoundingClientRect()
-            var data = {
-              x: item.attributes.x.value,
-              y: item.attributes.y.value,
+            let index = that.seatList.findIndex((el) => (el.x === parseInt(item.attributes.x.value) && el.y === parseInt(item.attributes.y.value)))
+            let newObject = Object.assign({}, that.seatList[index], {
               top: clientRect.top,
               bottom: clientRect.bottom,
               left: clientRect.left,
               right: clientRect.right
-            }
-            this.seatList.push(data)
+            })
+            this.$set(that.seatList, index, newObject)
           }
         }
       })
@@ -142,27 +155,41 @@ export default {
       }
     },
     end () {
-      let that = this
-      let seatList = that.seatList
-      for (const iterator of seatList) {
-        if (
-          iterator.right > that.left &&
-          iterator.left < that.left + that.width
-        ) {
-
+      if (this.showDrag) {
+        // 首先求出 `元素左上角` 与 `选框左上角` 在X方向较大值与Y方向较大值的交点，记为M点
+        // 然后求出 `元素右下角` 与` 选框右下角` 在X方向较小值与Y方向较小值的交点，记为N点。
+        // 如果M点的X坐标和Y坐标值均比N点相应的X坐标和Y坐标值小，亦即M和N可以分别构成一个矩形的左上角点和右上角点，则两矩形相交；其余情况则不相交。
+        let that = this
+        let seatList = that.seatList
+        let dragX0 = that.left
+        let dragY0 = that.top
+        let dragX1 = that.left + that.width
+        let dragY1 = that.top + that.height
+        that.selectSeatList = []
+        for (const index in seatList) {
+          let mX = Math.max(dragX0, seatList[index].left)
+          let mY = Math.max(dragY0, seatList[index].top)
+          let nX = Math.min(dragX1, seatList[index].right)
+          let nY = Math.min(dragY1, seatList[index].bottom)
+          if (mX < nX && mY < nY) {
+            this.$set(that.seatList[index], 'background', that.selectBack)
+            let temp = { ...seatList[index] }
+            that.selectSeatList.push(temp)
+          }
         }
+        that.left = 0
+        that.top = 0
+        that.width = 0
+        that.height = 0
+        that.startX = 0
+        that.startY = 0
+        that.showDrag = false
       }
-      that.left = 0
-      that.top = 0
-      that.width = 0
-      that.height = 0
-      that.startX = 0
-      that.startY = 0
-      that.showDrag = false
     }
   },
   created () {},
   mounted () {
+
   },
   updated () {
 
@@ -185,7 +212,6 @@ export default {
     margin 0 auto;
     .seatItem
       position absolute;
-      background #C6E2FF;
       color white;
       line-height 40px;
       border-radius:5px;
