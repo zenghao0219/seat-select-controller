@@ -9,19 +9,19 @@ export default {
   name: 'DragDiv',
   props: {
     left: Number,
-    top: Number
+    top: Number,
+    width: Number,
+    height: Number
   },
   data () {
     return {
       style: {
-        position: 'absolute',
         width: 0,
         height: 0,
         left: 0,
         top: 0,
-        margin: 0,
-        padding: 0,
-        border: '1px dashed #409EFF',
+        position: 'absolute',
+        border: '3px dashed #409EFF',
         zIndex: 1000,
         opacity: 0.6
       }

@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const hallSeat = {
   state: {
-    x: 8, y: 6
+    x: 0, y: 0
   },
   mutations: {
     changeX (state, x) {

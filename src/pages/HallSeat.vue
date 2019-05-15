@@ -37,6 +37,7 @@ export default {
   .el-main
     background-color: #E9EEF3;
     text-align: center;
+    padding 0;
   .el-aside
     height 100vh;
     text-align: center;
