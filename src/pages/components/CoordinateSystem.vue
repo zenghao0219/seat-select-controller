@@ -3,15 +3,15 @@
   @mousedown.stop.prevent.left="start($event)"
   @mousemove.stop.prevent.left="drag($event)"
   @mouseup.stop.prevent.left="end($event)"
-  @mouseleave.stop.prevent.left="end($event)">
+  @mouseleave.stop.prevent.left="fix($event)">
   <div class="seatSelectArea" ref="seatSelectArea">
       <div class="seatArea" :style="{width:seatAreaWidth+'px',height:seatAreaHeight+ 'px'}">
-        <template v-for="seatItem in seatList">
+        <template v-for="(seatItem,index) in seatList">
           <div ref="seatItem" :x="seatItem.x" :y="seatItem.y" class="seatItem" :key="'x'+seatItem.x+'y'+seatItem.y"
           :style="{width:seatItemWidth+'px',height:seatItemWidth+'px',
           transform: 'translate3d(' + seatItem.translateX  + 'px,'+ seatItem.translateY + 'px,0px)',
-          background:seatItem.background}">
-
+          background:seatItem.background}" @click="handleClick(index)">
+            <img v-if="seatItem.backimg" :src="seatItem.backimg">
           </div>
         </template>
       </div>
@@ -41,9 +41,15 @@ export default {
       startY: 0,
       showDrag: false,
       seatList: [],
-      selectSeatList: [],
-      unSelectBack: '#C6E2FF',
-      selectBack: '#409EFF'
+      unSelect: '#C6E2FF',
+      selecting: '#409EFF',
+      selected: '#E9EEF3',
+      timer: null,
+      normalImg: require('../../assets/images/0-0-1.png'),
+      loveImg: require('../../assets/images/5-0-3.png'),
+      loveLeftImg: require('../../assets/images/1-0-1.png'),
+      loveRightImg: require('../../assets/images/2-0-1.png'),
+      seatListBack: []
     }
   },
   watch: {
@@ -67,6 +73,54 @@ export default {
     },
     translateValue () {
       return this.seatItemWidth + this.shifting
+    },
+    // 根据seatList 生成一个类map的对象 key值为gRow坐标 value值为gRow为key值的数组
+    creatSeatMap () {
+      let seatList = this.seatList
+      let selectedList = []
+      for (const index in seatList) {
+        if (seatList[index].background === this.selected) {
+          selectedList.push(seatList[index])
+        }
+      }
+      var obj = {}
+      for (let index in selectedList) {
+        let seatRowList = selectedList[index].y
+        if (seatRowList in obj) {
+          // if (selectedList[index].backimg === this.normalImg) {
+
+          // }
+          obj[seatRowList].push(selectedList[index])
+        } else {
+          let seatArr = []
+          seatArr.push(selectedList[index])
+          obj[seatRowList] = seatArr
+        }
+      }
+      return obj
+    },
+    selectingList () {
+      let selectingList = []
+      for (const index in this.seatList) {
+        if (this.seatList[index].background === this.selecting) {
+          let temp = { ...this.seatList[index] }
+          temp.orgIndex = index
+          selectingList.push(temp)
+        }
+      }
+      var obj = {}
+      for (let index in selectingList) {
+        let seatRowList = selectingList[index].y
+        if (seatRowList in obj) {
+          obj[seatRowList].push(selectingList[index])
+        } else {
+          let seatArr = []
+
+          seatArr.push(selectingList[index])
+          obj[seatRowList] = seatArr
+        }
+      }
+      return obj
     }
   },
   methods: {
@@ -98,7 +152,8 @@ export default {
             y: y,
             translateX: that.translateValue * (x - 1),
             translateY: that.translateValue * (y - 1),
-            background: this.unSelectBack
+            background: this.unSelect,
+            backimg: null
           }
           that.seatList.push(data)
         }
@@ -121,27 +176,19 @@ export default {
     },
     start (e) {
       let that = this
-      // // 阻止事件冒泡
-      // if (e.stopPropagation) {
-      //   e.stopPropagation()
-      // } else {
-      //   e.cancelBubble = true
-      // }
-      // if (e.preventDefault) {
-      //   e.preventDefault()
-      // } else {
-      //   e.returnValue = false
-      // }
-      // 判断是否为鼠标左键被按下
-      // if (e.buttons !== 1 || e.which !== 1) return
-      // console.log(e.clientX, e.clientY)
+      // 解决mousedown导致click失效
+      if (that.timer) {
+        clearTimeout(that.timer)
+      }
+      that.timer = setTimeout(function () {
+        that.showDrag = true
+      }, 100)
       let x = e.clientX
       let y = e.clientY
       that.left = x
       that.top = y
       that.startX = x
       that.startY = y
-      that.showDrag = true
     },
     drag (e) {
       let that = this
@@ -154,7 +201,20 @@ export default {
         that.height = Math.abs(y - that.startY)
       }
     },
+    fix () {
+      if (this.showDrag) {
+        let that = this
+        that.left = 0
+        that.top = 0
+        that.width = 0
+        that.height = 0
+        that.startX = 0
+        that.startY = 0
+        that.showDrag = false
+      }
+    },
     end () {
+      clearTimeout(this.timer)
       if (this.showDrag) {
         // 首先求出 `元素左上角` 与 `选框左上角` 在X方向较大值与Y方向较大值的交点，记为M点
         // 然后求出 `元素右下角` 与` 选框右下角` 在X方向较小值与Y方向较小值的交点，记为N点。
@@ -165,16 +225,23 @@ export default {
         let dragY0 = that.top
         let dragX1 = that.left + that.width
         let dragY1 = that.top + that.height
-        that.selectSeatList = []
         for (const index in seatList) {
           let mX = Math.max(dragX0, seatList[index].left)
           let mY = Math.max(dragY0, seatList[index].top)
           let nX = Math.min(dragX1, seatList[index].right)
           let nY = Math.min(dragY1, seatList[index].bottom)
           if (mX < nX && mY < nY) {
-            this.$set(that.seatList[index], 'background', that.selectBack)
-            let temp = { ...seatList[index] }
-            that.selectSeatList.push(temp)
+            if (that.seatList[index].background === that.selecting) {
+              if (that.seatList[index].backimg === '' || that.seatList[index].backimg === null) {
+                this.$set(that.seatList[index], 'background', that.unSelect)
+              } else {
+                this.$set(that.seatList[index], 'background', that.selected)
+              }
+            } else if (that.seatList[index].background === that.unSelect) {
+              this.$set(that.seatList[index], 'background', that.selecting)
+            } else if (that.seatList[index].background === that.selected) {
+              this.$set(that.seatList[index], 'background', that.selecting)
+            }
           }
         }
         that.left = 0
@@ -184,6 +251,88 @@ export default {
         that.startX = 0
         that.startY = 0
         that.showDrag = false
+      }
+    },
+    handleClick (index) {
+      let that = this
+      if (that.seatList[index].background === that.selecting) {
+        if (that.seatList[index].backimg === '' || that.seatList[index].backimg === null) {
+          this.$set(that.seatList[index], 'background', that.unSelect)
+        } else {
+          this.$set(that.seatList[index], 'background', that.selected)
+        }
+      } else if (that.seatList[index].background === that.unSelect) {
+        this.$set(that.seatList[index], 'background', that.selecting)
+      } else if (that.seatList[index].background === that.selected) {
+        this.$set(that.seatList[index], 'background', that.selecting)
+      }
+    },
+    markSeats (e) {
+      let that = this
+      let seatList = that.seatList
+      if (e === 'normal') {
+        for (const index in seatList) {
+          if (that.seatList[index].background === that.selecting) {
+            this.$set(that.seatList[index], 'background', that.selected)
+            this.$set(that.seatList[index], 'backimg', that.normalImg)
+          }
+        }
+      } else if (e === 'love') {
+        for (let index in this.selectingList) {
+          let seatRowList = this.selectingList[index]
+          if (seatRowList.length % 2 !== 0) {
+            this.$notify({
+              title: '警告',
+              message: '请保证选择的情侣座成对出现~',
+              type: 'warning',
+              duration: 2000
+            })
+            return
+          } else {
+            for (const item of seatRowList) {
+              let left = seatRowList.find((el) => (el.x === item.x - 1))
+              let right = seatRowList.find((el) => (el.x === item.x + 1))
+              if (left === undefined && right === undefined) {
+                this.$notify({
+                  title: '警告',
+                  message: '请保证选择的情侣座位互相贴近~',
+                  type: 'warning',
+                  duration: 2000
+                })
+                return
+              }
+            }
+          }
+        }
+        for (let index in this.selectingList) {
+          let seatRowList = this.selectingList[index]
+          let direction = 'left'
+          for (const item of seatRowList) {
+            if (direction === 'left') {
+              this.$set(that.seatList[item.orgIndex], 'background', that.selected)
+              this.$set(that.seatList[item.orgIndex], 'backimg', that.loveLeftImg)
+              direction = 'right'
+            } else if (direction === 'right') {
+              this.$set(that.seatList[item.orgIndex], 'background', that.selected)
+              this.$set(that.seatList[item.orgIndex], 'backimg', that.loveRightImg)
+              direction = 'left'
+            }
+          }
+        }
+      } else if (e === 'clear') {
+        for (const index in seatList) {
+          if (that.seatList[index].background === that.selecting) {
+            this.$set(that.seatList[index], 'background', that.unSelect)
+            this.$set(that.seatList[index], 'backimg', null)
+          }
+        }
+      }
+    },
+    clearSeat () {
+      let that = this
+      for (const index in that.seatList) {
+        this.$set(that.seatList[index], 'background', that.unSelect)
+        this.$set(that.seatList[index], 'backimg', null)
       }
     }
   },
@@ -216,4 +365,10 @@ export default {
       line-height 40px;
       border-radius:5px;
       user-select:none;
+      display flex;
+      img
+        width 100%
+        height 100%
+        border none
+        object-fit cover
 </style>

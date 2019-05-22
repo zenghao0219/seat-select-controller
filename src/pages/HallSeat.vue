@@ -1,10 +1,10 @@
 <template>
     <el-container>
       <el-aside>
-        <controller-aside/>
+        <controller-aside @markSeats="markSeats" @clearSeat="clearSeat"/>
       </el-aside>
       <el-main>
-        <coordinate-system/>
+        <coordinate-system ref="coordinateSystem"/>
       </el-main>
     </el-container>
 </template>
@@ -26,7 +26,14 @@ export default {
   },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    markSeats (e) {
+      this.$refs.coordinateSystem.markSeats(e)
+    },
+    clearSeat () {
+      this.$refs.coordinateSystem.clearSeat()
+    }
+  },
   created () {},
   mounted () {}
 }
