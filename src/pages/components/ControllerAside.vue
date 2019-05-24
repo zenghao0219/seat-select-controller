@@ -19,7 +19,18 @@
         </el-timeline-item>
         <el-timeline-item timestamp="第二步" placement="top" size= 'large' color="#C6E2FF">
           <el-card>
-            选择座位区域(框选或点选)
+            <div slot="header">
+                <span>
+                选择座位区域(框选或点选)
+                </span>
+            </div>
+             <el-row>
+              <el-col :span="24">
+                 <div class="seatButton" @click="markSeats('clear')">
+                  <p class="seatText">撤销选中</p>
+                </div>
+              </el-col>
+            </el-row>
           </el-card>
         </el-timeline-item>
         <el-timeline-item timestamp="第三步" placement="top" size= 'large' color="#C6E2FF">
@@ -40,9 +51,9 @@
             </el-row>
             <el-row style="margin-top:20px">
               <el-col :span="11">
-                <div class="seatButton" @click="markSeats('clear')">
-                  <p class="seatText">撤销已选</p>
-                  </div>
+                <div class="seatButton" @click="markSeats('road')">
+                  <p class="seatText">过道</p>
+                </div>
               </el-col>
               <el-col :span="2">
                 &nbsp;
@@ -77,7 +88,7 @@
                   <p>确认不再修改吗？</p>
                   <div style="text-align: right; margin: 0">
                     <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
-                    <el-button type="primary" size="mini" @click="visible2 = false">确定</el-button>
+                    <el-button type="primary" size="mini" @click="confirm()">确定</el-button>
                   </div>
                   <el-button slot="reference" size="small" round type="primary">确认完成</el-button>
                 </el-popover>
@@ -132,6 +143,10 @@ export default {
     clearSeat () {
       this.visible = false
       this.$emit('clearSeat')
+    },
+    confirm () {
+      this.visible2 = false
+      this.$emit('confirm')
     }
   },
   created () {},

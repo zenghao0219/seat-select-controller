@@ -1,7 +1,7 @@
 <template>
     <el-container>
       <el-aside>
-        <controller-aside @markSeats="markSeats" @clearSeat="clearSeat"/>
+        <controller-aside @markSeats="markSeats" @clearSeat="clearSeat" @confirm="confirm"/>
       </el-aside>
       <el-main>
         <coordinate-system ref="coordinateSystem"/>
@@ -32,6 +32,9 @@ export default {
     },
     clearSeat () {
       this.$refs.coordinateSystem.clearSeat()
+    },
+    confirm () {
+      this.$refs.coordinateSystem.confirm()
     }
   },
   created () {},

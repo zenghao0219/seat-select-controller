@@ -5,7 +5,7 @@
   @mouseup.stop.prevent.left="end($event)"
   @mouseleave.stop.prevent.left="fix($event)">
   <div class="seatSelectArea" ref="seatSelectArea">
-      <div class="seatArea" :style="{width:seatAreaWidth+'px',height:seatAreaHeight+ 'px'}">
+      <div class="seatArea" :style="{width:seatAreaWidth+'px',height:seatAreaHeight+ 'px'}" v-show="x!==0 && y!==0">
         <template v-for="(seatItem,index) in seatList">
           <div ref="seatItem" :x="seatItem.x" :y="seatItem.y" class="seatItem" :key="'x'+seatItem.x+'y'+seatItem.y"
           :style="{width:seatItemWidth+'px',height:seatItemWidth+'px',
@@ -322,6 +322,16 @@ export default {
       } else if (e === 'clear') {
         for (const index in seatList) {
           if (that.seatList[index].background === that.selecting) {
+            if (that.seatList[index].backimg !== null) {
+              this.$set(that.seatList[index], 'background', that.selected)
+            } else {
+              this.$set(that.seatList[index], 'background', that.unSelect)
+            }
+          }
+        }
+      } else if (e === 'road') {
+        for (const index in seatList) {
+          if (that.seatList[index].background === that.selecting) {
             this.$set(that.seatList[index], 'background', that.unSelect)
             this.$set(that.seatList[index], 'backimg', null)
           }
@@ -334,6 +344,42 @@ export default {
         this.$set(that.seatList[index], 'background', that.unSelect)
         this.$set(that.seatList[index], 'backimg', null)
       }
+    },
+    confirm () {
+      let confirmSeatList = []
+      for (const index in this.seatList) {
+        if (this.seatList[index].background === this.selected) {
+          var temp = {}
+          temp.x = this.seatList[index].x
+          temp.y = this.seatList[index].y
+          if (this.seatList[index].backimg === this.normalImg) {
+            temp.type = 0
+          }
+          if (this.seatList[index].backimg === this.loveLeftImg) {
+            temp.type = 1
+          }
+          if (this.seatList[index].backimg === this.loveRightImg) {
+            temp.type = 2
+          }
+          confirmSeatList.push(temp)
+        }
+      }
+      if (confirmSeatList.length <= 0) {
+        this.$notify({
+          title: '警告',
+          message: '请至少编辑一个座位~',
+          type: 'warning',
+          duration: 2000
+        })
+        return
+      }
+      this.$post(this.interfaceURL + 'insertSeat', {
+        seats: confirmSeatList
+      }).then((response) => {
+        console.log(response)
+      }, err => {
+        console.log(err)
+      })
     }
   },
   created () {},
@@ -359,6 +405,9 @@ export default {
     display flex
     flex-wrap: wrap;
     margin 0 auto;
+    padding 5px
+    border 2px dashed rgba(0,0,0,0.2)
+    border-radius 5px;
     .seatItem
       position absolute;
       color white;
