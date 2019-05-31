@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const hallSeat = {
   state: {
-    x: 0, y: 0
+    x: 0, y: 0, templeteName: null, templetePrice: null, confirmButtonLoading: false
   },
   mutations: {
     changeX (state, x) {
@@ -12,13 +12,46 @@ const hallSeat = {
     },
     changeY (state, y) {
       state.y = y
+    },
+    changeTempleteName (state, templeteName) {
+      state.templeteName = templeteName
+    },
+    changeTempletePrice (state, templetePrice) {
+      state.templetePrice = templetePrice
+    },
+    changeConfirmButtonLoading (state, confirmButtonLoading) {
+      state.confirmButtonLoading = confirmButtonLoading
     }
   },
-  actions: { },
+  actions: {
+    clearHallSeat ({ commit }) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          commit('changeX', 0)
+          commit('changeY', 0)
+          commit('changeTempleteName', null)
+          commit('changeTempletePrice', null)
+          commit('changeConfirmButtonLoading', false)
+          resolve()
+        }, 16)
+      })
+    }
+  },
   getters: { }
+}
+const config = {
+  state: {
+    fullscreen: false
+  },
+  mutations: {
+    makeFullscreen (state, fullscreen) {
+      state.fullscreen = fullscreen
+    }
+  }
 }
 export default new Vuex.Store({
   modules: {
-    hallSeat
+    hallSeat,
+    config
   }
 })

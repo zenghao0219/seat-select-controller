@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 import DragDiv from './DragDiv'
 export default {
   name: 'CoordinateSystem',
   components: {
     DragDiv
   },
-  props: {},
+  props: ['prop_x', 'prop_y', 'prop_templeteName', 'prop_templetePrice'],
   data () {
     return {
       seatItemWidth: 40,
@@ -45,26 +45,27 @@ export default {
       selecting: '#409EFF',
       selected: '#E9EEF3',
       timer: null,
-      normalImg: require('../../assets/images/0-0-1.png'),
-      loveImg: require('../../assets/images/5-0-3.png'),
-      loveLeftImg: require('../../assets/images/1-0-1.png'),
-      loveRightImg: require('../../assets/images/2-0-1.png'),
-      seatListBack: []
+      normalImg: require('../../../assets/images/0-0-1.png'),
+      loveImg: require('../../../assets/images/5-0-3.png'),
+      loveLeftImg: require('../../../assets/images/1-0-1.png'),
+      loveRightImg: require('../../../assets/images/2-0-1.png'),
+      x: this.prop_x,
+      y: this.prop_y,
+      templeteName: this.prop_templeteName,
+      templetePrice: this.prop_templetePrice
     }
   },
   watch: {
-    x () {
+    prop_x (value) {
+      this.x = value
       this.refreshDom()
     },
-    y () {
+    prop_y (value) {
+      this.y = value
       this.refreshDom()
     }
   },
   computed: {
-    ...mapState({
-      x: state => state.hallSeat.x,
-      y: state => state.hallSeat.y
-    }),
     seatAreaWidth () {
       return (this.seatItemWidth + this.shifting) * this.x - this.shifting
     },
@@ -124,6 +125,11 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'changeConfirmButtonLoading']),
+    ...mapActions([
+      'clearHallSeat'
+    ]),
     refreshDom () {
       let that = this
       let seatScale = 1
@@ -346,6 +352,7 @@ export default {
       }
     },
     confirm () {
+      let that = this
       let confirmSeatList = []
       for (const index in this.seatList) {
         if (this.seatList[index].background === this.selected) {
@@ -371,14 +378,55 @@ export default {
           type: 'warning',
           duration: 2000
         })
+        this.changeConfirmButtonLoading(false)
+        return
+      }
+      if (this.templetePrice === null || this.templetePrice < 0 || this.templetePrice > 9999) {
+        this.$notify({
+          title: '警告',
+          message: '价格只能在0~9999之间且不能为空',
+          type: 'warning',
+          duration: 2000
+        })
+        this.changeConfirmButtonLoading(false)
+        return
+      }
+      if (this.templeteName === null) {
+        this.$notify({
+          title: '警告',
+          message: '模版名称不能为空',
+          type: 'warning',
+          duration: 2000
+        })
+        this.changeConfirmButtonLoading(false)
         return
       }
       this.$post(this.interfaceURL + 'insertSeat', {
-        seats: confirmSeatList
+        seats: confirmSeatList,
+        templeteName: this.templeteName,
+        templetePrice: this.templetePrice
       }).then((response) => {
         console.log(response)
+        let params = this.templeteName
+        if (response.errCode === 0) {
+          that.$router.replace({ name: 'seatList',
+            params: { templeteName: params }
+          })
+        } else {
+          that.$notify.error({
+            title: '警告',
+            message: '系统内部错误',
+            duration: 2000
+          })
+          that.changeConfirmButtonLoading(false)
+        }
       }, err => {
-        console.log(err)
+        that.$notify.error({
+          title: '警告',
+          message: err.message,
+          duration: 2000
+        })
+        that.changeConfirmButtonLoading(false)
       })
     }
   },
@@ -395,7 +443,7 @@ export default {
 .pages
   width 100%
   height 100vh;
-  padding 50px;
+  padding 100px 50px;
   box-sizing border-box;
   .seatSelectArea
     width 100%

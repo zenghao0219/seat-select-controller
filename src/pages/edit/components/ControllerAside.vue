@@ -40,13 +40,13 @@
             </div>
             <el-row>
               <el-col :span="11">
-                <div class="seatButton" @click="markSeats('normal')">普通座位<img class="seat-demo" src="../../assets/images/0-0-1.png"/></div>
+                <div class="seatButton" @click="markSeats('normal')">普通座位<img class="seat-demo" src="../../../assets/images/0-0-1.png"/></div>
               </el-col>
               <el-col :span="2">
                 &nbsp;
               </el-col>
               <el-col :span="11">
-                <div  class="seatButton" @click="markSeats('love')">情侣座位<img class="seat-demo" src="../../assets/images/5-0-3.png"/></div>
+                <div  class="seatButton" @click="markSeats('love')">情侣座位<img class="seat-demo" src="../../../assets/images/5-0-3.png"/></div>
               </el-col>
             </el-row>
             <el-row style="margin-top:20px">
@@ -65,6 +65,48 @@
           </el-card>
         </el-timeline-item>
         <el-timeline-item timestamp="第四步" placement="top" size= 'large' color="#C6E2FF">
+          <el-card>
+            <div slot="header">
+                  <span>填写要保存模版名称</span>
+            </div>
+            <el-row>
+              <el-col :span="24">
+                 <el-input
+                    type="text"
+                    placeholder="请输入模版名称"
+                    v-model="templeteName"
+                    clearable
+                    maxlength="10"
+                    show-word-limit
+                    @change="handleChangeTempleteName"
+                  >
+                  </el-input>
+              </el-col>
+            </el-row>
+          </el-card>
+        </el-timeline-item>
+        <el-timeline-item timestamp="第五步" placement="top" size= 'large' color="#C6E2FF">
+          <el-card>
+            <div slot="header">
+                  <span>填写价格 单位:元</span>
+            </div>
+            <el-row>
+              <el-col :span="24">
+                 <el-input
+                    type="number"
+                    placeholder="请输入价格"
+                    v-model="templetePrice"
+                    prefix-icon="el-icon-money"
+                    max="99999"
+                    clearable
+                    @change="handleChangeTempletePrice"
+                  >
+                  </el-input>
+              </el-col>
+            </el-row>
+          </el-card>
+        </el-timeline-item>
+        <el-timeline-item timestamp="第六步" placement="top" size= 'large' color="#C6E2FF">
           <el-card>
             <el-row>
               <el-col :span="12">
@@ -90,7 +132,7 @@
                     <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
                     <el-button type="primary" size="mini" @click="confirm()">确定</el-button>
                   </div>
-                  <el-button slot="reference" size="small" round type="primary">确认完成</el-button>
+                  <el-button :loading="confirmButtonLoading" slot="reference" size="small" round type="primary">确认完成</el-button>
                 </el-popover>
               </el-col>
             </el-row>
@@ -103,7 +145,7 @@
 
 <script>
 import BScroll from 'better-scroll'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'ControllerAside',
   components: {},
@@ -128,14 +170,31 @@ export default {
     }
   },
   watch: {},
-  computed: {},
+  computed: {
+    ...mapState({
+      confirmButtonLoading: state => state.hallSeat.confirmButtonLoading,
+      templeteName: state => state.hallSeat.templeteName,
+      templetePrice: state => state.hallSeat.templetePrice
+    })
+  },
   methods: {
-    ...mapMutations(['changeX', 'changeY']),
+    ...mapMutations([
+      'changeX',
+      'changeY',
+      'changeTempleteName',
+      'changeTempletePrice',
+      'changeConfirmButtonLoading']),
     handleChangeX () {
       this.changeX(this.x)
     },
     handleChangeY () {
       this.changeY(this.y)
+    },
+    handleChangeTempleteName () {
+      this.changeTempleteName(this.templeteName)
+    },
+    handleChangeTempletePrice () {
+      this.changeTempletePrice(this.templetePrice)
     },
     markSeats (e) {
       this.$emit('markSeats', e)
@@ -146,6 +205,7 @@ export default {
     },
     confirm () {
       this.visible2 = false
+      this.changeConfirmButtonLoading(true)
       this.$emit('confirm')
     }
   },
@@ -156,7 +216,7 @@ export default {
         this.scroll = new BScroll(this.$refs.contentScroll, {
           scrollbar: {
             fade: true,
-            interactive: false // 1.8.0 新增
+            interactive: false
           },
           mouseWheel: {
             speed: 20,
