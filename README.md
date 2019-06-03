@@ -39,7 +39,7 @@
 ### 项目依赖组件
 
 该项目引用到的外部常用组件
->1. [element-ui](https://element.eleme.cn "element-ui")
+> 1. [element-ui](https://element.eleme.cn "element-ui")
 > 2. [better-scroll](https://github.com/ustbhuangyi/better-scroll "better-scroll")
 > 3. [axios](https://github.com/axios/axios "axios")
 
