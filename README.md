@@ -36,7 +36,7 @@
 
 #### 项目截图
 
-![](https://github.com/zenghao0219/files-store/blob/master/seats/seat-controller-list.png?raw=true)
+![](https://github.com/zenghao0219/files-store/blob/master/seats/seat-controller-list.jpg?raw=true)
 
 
 ![](https://github.com/zenghao0219/files-store/blob/master/seats/seat-controller-index.png?raw=true)
