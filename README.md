@@ -1,4 +1,4 @@
-# seat-select-controller (vue后台编辑座位端)
+# seat-select-controller (vue后台座位数据录入端)
 
 ![](https://github.com/zenghao0219/files-store/blob/master/seats/process1.png?raw=true)
 
@@ -17,6 +17,15 @@
 >
 > [点击这里预览demo(请使用PC端访问)](https://www.xollipop.top/seats-controller/#/ "请使用PC访问")
 
+### 赞助者名单
+首先特别感谢赞助者的所有朋友们,真的特别感谢!(所有贡献者列表请在[此处](https://github.com/Wechat-Group/WxJava/graphs/contributors))
+<details>
+<summary>点击此处展开查看赞助者最多的几位朋友</summary>
+
+1. [*磊 (KaelLuo) (¥6.66)](http://github.com/KaelLuo)
+2. *磊 (涅槃) (¥100)
+3. *升平 (¥8.88)
+</details>
 
 ### 座位图体系项目导航
 
@@ -84,6 +93,7 @@ npm run serve
 ```
 npm run build
 ```
+
 ### 讨论
 
 欢迎加群讨论: 3544395
@@ -91,6 +101,6 @@ npm run build
 ### 项目捐赠
 写代码不易...请作者喝杯咖啡呗?
 
-<img src="https://www.xollipop.top/code.png" width="200" hegiht="300"/>
+![](https://www.xollipop.top/pay.jpeg)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
