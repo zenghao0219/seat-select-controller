@@ -114,7 +114,7 @@
                   placement="top"
                   width="160"
                   v-model="visible">
-                  <p>确认情空所有的座位吗？(已编辑的座位也会清除)</p>
+                  <p>确认清空所有的座位吗？(已编辑的座位也会清除)</p>
                   <div style="text-align: right; margin: 0">
                     <el-button size="mini" type="text" @click="visible = false">取消</el-button>
                     <el-button type="primary" size="mini" @click="clearSeat()">确定</el-button>
@@ -149,7 +149,7 @@ import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'ControllerAside',
   components: {},
-  props: {},
+  props: ['prop_x', 'prop_y', 'prop_templeteName', 'prop_templetePrice'],
   data () {
     return {
       max: 35,
@@ -166,15 +166,28 @@ export default {
         }
       },
       visible: false,
-      visible2: false
+      visible2: false,
+      templeteName: null,
+      templetePrice: null
     }
   },
-  watch: {},
+  watch: {
+    prop_x (value) {
+      this.x = value
+    },
+    prop_y (value) {
+      this.y = value
+    },
+    prop_templeteName (value) {
+      this.templeteName = value
+    },
+    prop_templetePrice (value) {
+      this.templetePrice = value
+    }
+  },
   computed: {
     ...mapState({
-      confirmButtonLoading: state => state.hallSeat.confirmButtonLoading,
-      templeteName: state => state.hallSeat.templeteName,
-      templetePrice: state => state.hallSeat.templetePrice
+      confirmButtonLoading: state => state.hallSeat.confirmButtonLoading
     })
   },
   methods: {
@@ -183,12 +196,15 @@ export default {
       'changeY',
       'changeTempleteName',
       'changeTempletePrice',
-      'changeConfirmButtonLoading']),
+      'changeConfirmButtonLoading',
+      'changeReset']),
     handleChangeX () {
       this.changeX(this.x)
+      this.changeReset(true)
     },
     handleChangeY () {
       this.changeY(this.y)
+      this.changeReset(true)
     },
     handleChangeTempleteName () {
       this.changeTempleteName(this.templeteName)
@@ -200,6 +216,7 @@ export default {
       this.$emit('markSeats', e)
     },
     clearSeat () {
+      this.changeReset(true)
       this.visible = false
       this.$emit('clearSeat')
     },

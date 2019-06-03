@@ -5,14 +5,22 @@
         <el-button icon="el-icon-full-screen" circle @click="handleFullScreen"></el-button>
       </div>
       <el-aside>
-        <controller-aside @markSeats="markSeats" @clearSeat="clearSeat" @confirm="confirm"/>
+        <controller-aside
+        @markSeats="markSeats"
+        @clearSeat="clearSeat"
+        @confirm="confirm"
+        :prop_x="x"
+        :prop_y="y"
+        :prop_templeteName="templeteName"
+        :prop_templetePrice="templetePrice"
+        />
       </el-aside>
       <el-main>
         <coordinate-system ref="coordinateSystem"
         :prop_x="x"
         :prop_y="y"
-        :prop_templeteName="templeteName"
-        :prop_templetePrice="templetePrice"/>
+        :prop_templeteId="templeteId"
+        :prop_seatList="seatList"/>
       </el-main>
     </el-container>
 </template>
@@ -30,7 +38,8 @@ export default {
   props: {},
   data () {
     return {
-      seatList: []
+      seatList: [],
+      templeteId: null
     }
   },
   watch: {},
@@ -77,7 +86,7 @@ export default {
     ]),
     getSeatList (templeteId) {
       this.$get(this.interfaceURL + 'findSeatListByTempleteId', { 'id': templeteId }).then((response) => {
-        console.log(response)
+        console.log('接口返回', response)
         this.seatList = response.data.seats
         this.changeTempleteName(response.data.templeteName)
         this.changeTempletePrice(response.data.templetePrice)
@@ -144,6 +153,7 @@ export default {
   mounted () {
     var templeteId = this.$route.params.templeteId
     if (templeteId !== undefined) {
+      this.templeteId = templeteId
       this.getSeatList(templeteId)
     }
   },

@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import { mapMutations, mapActions } from 'vuex'
+import { mapMutations, mapActions, mapState } from 'vuex'
 import DragDiv from './DragDiv'
 export default {
   name: 'CoordinateSystem',
   components: {
     DragDiv
   },
-  props: ['prop_x', 'prop_y', 'prop_templeteName', 'prop_templetePrice'],
+  props: ['prop_x', 'prop_y', 'prop_seatList', 'prop_templeteId'],
   data () {
     return {
       seatItemWidth: 40,
@@ -41,6 +41,7 @@ export default {
       startY: 0,
       showDrag: false,
       seatList: [],
+      seatListBack: null,
       unSelect: '#C6E2FF',
       selecting: '#409EFF',
       selected: '#E9EEF3',
@@ -49,13 +50,15 @@ export default {
       loveImg: require('../../../assets/images/5-0-3.png'),
       loveLeftImg: require('../../../assets/images/1-0-1.png'),
       loveRightImg: require('../../../assets/images/2-0-1.png'),
-      x: this.prop_x,
-      y: this.prop_y,
-      templeteName: this.prop_templeteName,
-      templetePrice: this.prop_templetePrice
+      x: 0,
+      y: 0,
+      templeteId: null
     }
   },
   watch: {
+    prop_seatList (value) {
+      this.seatListBack = value
+    },
     prop_x (value) {
       this.x = value
       this.refreshDom()
@@ -63,9 +66,17 @@ export default {
     prop_y (value) {
       this.y = value
       this.refreshDom()
+    },
+    prop_templeteId (value) {
+      this.templeteId = value
     }
   },
   computed: {
+    ...mapState({
+      templeteName: state => state.hallSeat.templeteName,
+      templetePrice: state => state.hallSeat.templetePrice,
+      reset: state => state.hallSeat.reset
+    }),
     seatAreaWidth () {
       return (this.seatItemWidth + this.shifting) * this.x - this.shifting
     },
@@ -74,31 +85,6 @@ export default {
     },
     translateValue () {
       return this.seatItemWidth + this.shifting
-    },
-    // 根据seatList 生成一个类map的对象 key值为gRow坐标 value值为gRow为key值的数组
-    creatSeatMap () {
-      let seatList = this.seatList
-      let selectedList = []
-      for (const index in seatList) {
-        if (seatList[index].background === this.selected) {
-          selectedList.push(seatList[index])
-        }
-      }
-      var obj = {}
-      for (let index in selectedList) {
-        let seatRowList = selectedList[index].y
-        if (seatRowList in obj) {
-          // if (selectedList[index].backimg === this.normalImg) {
-
-          // }
-          obj[seatRowList].push(selectedList[index])
-        } else {
-          let seatArr = []
-          seatArr.push(selectedList[index])
-          obj[seatRowList] = seatArr
-        }
-      }
-      return obj
     },
     selectingList () {
       let selectingList = []
@@ -153,7 +139,39 @@ export default {
       that.seatList = []
       for (let x = 1; x <= that.x; x++) {
         for (let y = 1; y <= that.y; y++) {
-          var data = {
+          var data = {}
+          if (!that.reset && that.seatListBack != null && that.seatListBack.length > 0) {
+            let temp = that.seatListBack.find((el) => (el.x === x && el.y === y))
+            if (temp) {
+              debugger
+              let backimg = null
+              switch (temp.type) {
+                case '0':
+                  backimg = this.normalImg
+                  break
+                case '1':
+                  backimg = this.loveLeftImg
+                  break
+                case '2':
+                  backimg = this.loveRightImg
+                  break
+                default:
+                  backimg = this.normalImg
+                  break
+              }
+              data = {
+                x: x,
+                y: y,
+                translateX: that.translateValue * (x - 1),
+                translateY: that.translateValue * (y - 1),
+                background: this.selected,
+                backimg: backimg
+              }
+              that.seatList.push(data)
+              continue
+            }
+          }
+          data = {
             x: x,
             y: y,
             translateX: that.translateValue * (x - 1),
@@ -404,7 +422,8 @@ export default {
       this.$post(this.interfaceURL + 'insertSeat', {
         seats: confirmSeatList,
         templeteName: this.templeteName,
-        templetePrice: this.templetePrice
+        templetePrice: this.templetePrice,
+        templeteId: this.templeteId
       }).then((response) => {
         console.log(response)
         let params = this.templeteName

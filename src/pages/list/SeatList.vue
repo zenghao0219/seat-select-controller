@@ -129,7 +129,6 @@ export default {
       })
     },
     handleEdit (index, row) {
-      console.log(index, row)
       this.$router.push({ name: 'hallSeat',
         params: { templeteId: row.id }
       })

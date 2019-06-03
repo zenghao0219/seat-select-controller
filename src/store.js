@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const hallSeat = {
   state: {
-    x: 0, y: 0, templeteName: null, templetePrice: null, confirmButtonLoading: false
+    x: 0, y: 0, templeteName: null, templetePrice: null, confirmButtonLoading: false, reset: false
   },
   mutations: {
     changeX (state, x) {
@@ -21,6 +21,9 @@ const hallSeat = {
     },
     changeConfirmButtonLoading (state, confirmButtonLoading) {
       state.confirmButtonLoading = confirmButtonLoading
+    },
+    changeReset (state, reset) {
+      state.reset = reset
     }
   },
   actions: {
@@ -32,6 +35,7 @@ const hallSeat = {
           commit('changeTempleteName', null)
           commit('changeTempletePrice', null)
           commit('changeConfirmButtonLoading', false)
+          commit('changeReset', false)
           resolve()
         }, 16)
       })

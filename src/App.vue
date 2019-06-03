@@ -21,10 +21,12 @@ export default {
     ])
   },
   mounted () {
+    let that = this
     window.onresize = () => {
       return (() => {
-        if (this.fullscreen) {
-          this.makeFullscreen(false)
+        console.log(document.fullscreenElement === null)
+        if (document.fullscreenElement === null) {
+          that.makeFullscreen(false)
         }
       })()
     }
