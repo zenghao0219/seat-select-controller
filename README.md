@@ -1,50 +1,62 @@
 # seat-select-controller (vue后台编辑座位端)
+
+![](https://img.shields.io/github/stars/zenghao0219/seat-select-controller.svg?style=social)
+![](https://img.shields.io/github/forks/zenghao0219/seat-select-controller.svg?style=social)
+![](http://progressed.io/bar/100?title=completed)
+![](https://img.shields.io/badge/language-vue-green.svg)
+![](https://img.shields.io/github/package-json/dependency-version/zenghao0219/seat-select-controller/vue.svg)
+![](https://img.shields.io/github/license/zenghao0219/seat-select.svg)
+![](https://img.shields.io/github/license/zenghao0219/seat-select-controller.svg)
+![](https://img.shields.io/github/release/zenghao0219/seat-select-controller.svg)
+![](https://img.shields.io/github/downloads/zenghao0219/seat-select-controller/total.svg)
 > if this project is useful to you :D , Please star this project~
 >
 > 如果这个项目对你有帮助 :D 请点个star吧~
-
-> [点击这里demo预览](https://www.xollipop.top/seats-controller/#/ "请使用PC访问")
+>
+> [点击这里预览demo(请使用PC端访问)](https://www.xollipop.top/seats-controller/#/ "请使用PC访问")
 
 ### 项目依赖组件
 
 该项目引用到的外部常用组件
-
-> [element-ui](https://element.eleme.cn "element-ui")
+1. [element-ui](https://element.eleme.cn "element-ui")
+2. [better-scroll](https://github.com/ustbhuangyi/better-scroll "better-scroll")
+3. [axios](https://github.com/axios/axios "axios")
 
 #### 项目截图
 
-<img src="https://www.xollipop.top/seat-controller-list.jpg" width="1180" hegiht="738"/>
+<img src="https://www.xollipop.top/seat-controller-list.jpg" width="100%"/>
 
-<img src="https://www.xollipop.top/seat-controller-index.jpg" width="1180" hegiht="738"/>
+
+<img src="https://www.xollipop.top/seat-controller-index.jpg" width="100%"/>
 
 #### 操作页面示例
 ```
 以下为编辑座位的gif示例,可实现框选编辑
 ```
 
-<img src="https://www.xollipop.top/seat-controller-demo1.gif" width="600" hegiht="312"/>
+<img src="https://www.xollipop.top/seat-controller-demo1.gif" width="100%"/>
 
 ### 目录结构
 ```
 .src
-├── App.vue
-├── assets
+├── App.vue --(入口组件)
+├── assets --(静态文件)
 │   └── images
-├── http.js
-├── main.js
-├── pages
+├── http.js --(axios工具类)
+├── main.js --(vue入口js)
+├── pages --(组件目录)
 │   ├── edit
-│   │   ├── HallSeat.vue
+│   │   ├── HallSeat.vue --(编辑座位父组件)
 │   │   └── components
-│   │       ├── ControllerAside.vue
-│   │       ├── CoordinateSystem.vue
-│   │       └── DragDiv.vue
+│   │       ├── ControllerAside.vue --(左边控制栏组件)
+│   │       ├── CoordinateSystem.vue --(坐标系组件)
+│   │       └── DragDiv.vue --(框选组件)
 │   └── list
-│       └── SeatList.vue
-├── plugins
-│   └── element.js
-├── router.js
-└── store.js
+│       └── SeatList.vue --(模版列表组件)
+├── plugins --(插件目录)
+│   └── element.js --(element-ui插件)
+├── router.js --(路由文件)
+└── store.js --(vuex文件)
 ```
 ### 初始化项目 (Project setup)
 ```
