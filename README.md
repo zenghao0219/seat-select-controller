@@ -1,40 +1,52 @@
 # seat-select-controller (vue后台编辑座位端)
 
+![](https://github.com/zenghao0219/files-store/blob/master/seats/process1.png?raw=true)
+
+
 ![](https://img.shields.io/github/stars/zenghao0219/seat-select-controller.svg?style=social)
 ![](https://img.shields.io/github/forks/zenghao0219/seat-select-controller.svg?style=social)
 ![](http://progressed.io/bar/100?title=completed)
 ![](https://img.shields.io/badge/language-vue-green.svg)
 ![](https://img.shields.io/github/package-json/dependency-version/zenghao0219/seat-select-controller/vue.svg)
-![](https://img.shields.io/github/license/zenghao0219/seat-select.svg)
 ![](https://img.shields.io/github/license/zenghao0219/seat-select-controller.svg)
 ![](https://img.shields.io/github/release/zenghao0219/seat-select-controller.svg)
-![](https://img.shields.io/github/downloads/zenghao0219/seat-select-controller/total.svg)
+<!-- ![](https://img.shields.io/github/downloads/zenghao0219/seat-select-controller/total.svg) -->
 > if this project is useful to you :D , Please star this project~
 >
 > 如果这个项目对你有帮助 :D 请点个star吧~
 >
 > [点击这里预览demo(请使用PC端访问)](https://www.xollipop.top/seats-controller/#/ "请使用PC访问")
 
+
+### 座位图体系项目导航
+
+- [移动端 seat-select](https://github.com/zenghao0219/seat-select)
+
+- [后台控制端 seat-select-controller](https://github.com/zenghao0219/seat-select-controller)
+
+- [数据接口端 seat-select-api](https://github.com/zenghao0219/seat-select-api)
+
+
 ### 项目依赖组件
 
 该项目引用到的外部常用组件
-1. [element-ui](https://element.eleme.cn "element-ui")
-2. [better-scroll](https://github.com/ustbhuangyi/better-scroll "better-scroll")
-3. [axios](https://github.com/axios/axios "axios")
+>1. [element-ui](https://element.eleme.cn "element-ui")
+> 2. [better-scroll](https://github.com/ustbhuangyi/better-scroll "better-scroll")
+> 3. [axios](https://github.com/axios/axios "axios")
 
 #### 项目截图
 
-<img src="https://www.xollipop.top/seat-controller-list.jpg" width="100%"/>
+![](https://github.com/zenghao0219/files-store/blob/master/seats/seat-controller-list.png?raw=true)
 
 
-<img src="https://www.xollipop.top/seat-controller-index.jpg" width="100%"/>
+![](https://github.com/zenghao0219/files-store/blob/master/seats/seat-controller-index.png?raw=true)
 
 #### 操作页面示例
 ```
 以下为编辑座位的gif示例,可实现框选编辑
 ```
 
-<img src="https://www.xollipop.top/seat-controller-demo1.gif" width="100%"/>
+![](https://github.com/zenghao0219/files-store/blob/master/seats/seat-controller-demo1.gif?raw=true)
 
 ### 目录结构
 ```
