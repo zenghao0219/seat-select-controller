@@ -18,9 +18,9 @@
 > [点击这里预览demo(请使用PC端访问)](https://www.xollipop.top/seats-controller/#/ "请使用PC访问")
 
 ### 赞助者名单
-首先特别感谢赞助者的所有朋友们,真的特别感谢!(所有贡献者列表请在[此处](https://github.com/Wechat-Group/WxJava/graphs/contributors))
+首先特别感谢赞助者的所有朋友们,真的特别感谢!(所有贡献者列表请在[此处](https://github.com/zenghao0219/contributors))
 <details>
-<summary>点击此处展开查看赞助者最多的几位朋友</summary>
+<summary>点击此处展开查看赞助最多的几位朋友</summary>
 
 1. [*磊 (KaelLuo) (¥6.66)](http://github.com/KaelLuo)
 2. *磊 (涅槃) (¥100)
