@@ -15,7 +15,7 @@
 >
 > 如果这个项目对你有帮助 :D 请点个star吧~
 >
-> [点击这里预览demo(请使用PC端访问)](https://www.xollipop.top/seats-controller/#/ "请使用PC访问")
+> [点击这里预览demo(请使用PC端访问)](https://zenghao0219.github.io/seat-select-controller-demo/ "请使用PC访问")
 
 ### 赞助者名单
 首先特别感谢赞助者的所有朋友们,真的特别感谢!(所有贡献者列表请在[此处](https://github.com/zenghao0219/contributors))
@@ -101,6 +101,12 @@ npm run build
 ### 项目捐赠
 写代码不易...请作者喝杯咖啡呗?
 
-![](https://www.xollipop.top/pay.jpeg)
+![](https://github.com/zenghao0219/files-store/blob/master/pay.jpeg?raw=true)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
+
+### 其他项目
+
+最近开发了一个垃圾分类的小程序 需要的朋友可以关注以下~
+
+<img src="https://i.postimg.cc/9fgDX670/gh-15fa1fdd771b-1280.jpg" width="200" hegiht="300"/>
